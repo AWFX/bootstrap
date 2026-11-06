@@ -1,0 +1,4 @@
+---
+# defaults
+timezone: Etc/UTC
+sudo_nopasswd: false

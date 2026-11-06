@@ -1,0 +1,22 @@
+- name: update all pkgs
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+    update_only: true
+  tags:
+    - update
+    - pkgs
+
+- name: install epel repo
+  ansible.builtin.dnf:
+    name: "epel-release"
+    state: present
+  tags:
+    - pkgs
+
+- name: install common pkgs
+  ansible.builtin.dnf:
+    name: "{{ pkgs }}"
+    state: present
+  tags:
+    - pkgs

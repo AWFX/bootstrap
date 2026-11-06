@@ -1,0 +1,17 @@
+galaxy_info:
+  author: AWFX
+  description: Basic Linux machine configuration
+  license: MIT
+  min_ansible_version: "2.14"
+  galaxy_tags: ["bootstrap"]
+
+  platforms:
+    - name: Rocky
+      versions:
+        - "all"
+
+collections:
+    - ansible.posix
+    - community.general
+
+dependencies: []
