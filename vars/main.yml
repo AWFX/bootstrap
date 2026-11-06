@@ -1,0 +1,10 @@
+---
+pkgs:
+  - zsh
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+  - btop
+  - vim
+  - nano
+  - git
+  - curl
