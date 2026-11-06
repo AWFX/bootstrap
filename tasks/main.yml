@@ -1,0 +1,61 @@
+---
+- name: verify username
+  ansible.builtin.assert:
+    that:
+      - username is defined
+      - username | length > 0
+    fail_msg: "The 'username' variable is mandatory"
+
+- name: gather facts
+  ansible.builtin.setup:
+    gather_subset:
+      - 'distribution'
+      - 'pkg_mgr'
+
+- name: include rpm package management
+  ansible.builtin.include_tasks: rpm.yml
+  when: ansible_pkg_mgr == "dnf"
+
+- name: configure hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"
+    use: systemd
+  when: (hostname | default(false))
+  tags: base
+
+- name: configure timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+    hwclock: UTC
+  tags: base
+
+- name: create user
+  ansible.builtin.user:
+    name: "{{ username }}"
+    shell: /bin/zsh
+    groups: wheel
+    append: yes
+
+- name: setup zsh configuration
+  ansible.builtin.copy:
+    src: zshrc
+    dest: "/home/{{ username }}/.zshrc"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0644"
+
+- name: add ssh pubkey
+  ansible.posix.authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ pubkey }}"
+  when: (pubkey | default(false))
+
+- name: allow passwordless sudo
+  community.general.sudoers:
+    name: nopasswd
+    state: present
+    user: "{{ username }}"
+    commands: ALL
+    nopassword: true
+  when: sudo_nopasswd | bool
