@@ -1,3 +1,11 @@
+- name: update dnf config
+  ansible.builtin.copy:
+    src: dnf.conf
+    dest: "/etc/dnf/dnf.conf"
+    owner: root
+    group: root
+    mode: "0644"
+
 - name: update all pkgs
   ansible.builtin.dnf:
     name: "*"
